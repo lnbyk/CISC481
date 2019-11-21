@@ -35,25 +35,29 @@ public class MAC {
 		String gap = "                                         ";
 		while(!queue.isEmpty()) {
 			int size = queue.size();
-			System.out.print(gap.substring(level * 5));
+			System.out.print(gap.substring(level * 4));
 			level++;
 			for(int i = 0; i < size; i++) {
-				List<int[]> cur = queue.poll();
+				List<int[]> cur = new ArrayList<>();
+				cur.addAll(queue.poll());
 				visited.add(Arrays.toString(cur.get(0)) + Arrays.toString(cur.get(1)));
-				System.out.print(Arrays.toString(cur.get(0)) + Arrays.toString(cur.get(1)) + "   ");
 				List<List<int[]>> states = nextState(cur);
+				System.out.print(Arrays.toString(cur.get(0)) + Arrays.toString(cur.get(1)) + "   ");
 				for(List<int[]> l : states) {
 					if(isGoal(l)) {
+						System.out.println();
 						System.out.println(Arrays.toString(l.get(0)) + Arrays.toString(l.get(1)));
 						return;
 					}
 					else if(!visited.contains(Arrays.toString(l.get(0)) + Arrays.toString(l.get(1)))) {
 						visited.add(Arrays.toString(l.get(0)) + Arrays.toString(l.get(1)));
-						queue.offer(l);
+						List<int[]> list = new ArrayList<>();
+						list.addAll(l);
+						queue.offer(list);
 					}
 				}
 			}
-			System.out.println();
+			System.out.println("\n");
 			
 		}
 		System.out.println("Nothing is here");
@@ -67,12 +71,13 @@ public class MAC {
 	// generator next states list
 	private static List<List<int[]>> nextState(List<int[]> curState){
 		List<List<int[]>> res = new ArrayList<>();
-		List<int[]> actions = possibleActions(curState);
+		List<int[]> actions = new ArrayList<>();
+		actions.addAll(possibleActions(curState));
 		for(int[] action : actions) {
 			int[] A = curState.get(0), B = curState.get(1);
 			int m1 = A[0] + action[0], c1 = A[1] + action[1], b1 = A[2] + action[2];
 			int m2 = B[0] - action[0], c2 = B[1] - action[1], b2 = B[2] - action[2];
-			if((m1 >= c2 || m1 == 0)&& (m2 >= c2 || m2 == 0)) {
+			if((m1 >= c1 || m1 == 0)&& (m2 >= c2 || m2 == 0)) {
 				List<int[]> valid = new ArrayList<>();
 				valid.add(new int[] {m1, c1, b1});
 				valid.add(new int[] {m2, c2, b2});
@@ -109,9 +114,6 @@ public class MAC {
 		List<int[]> cur = new ArrayList<>();
 		cur.add(new int[] {3,3,1});
 		cur.add(new int[] {0, 0, 0});
-		for(int[] i : possibleActions(cur)) {
-			System.out.println(Arrays.toString(i));
-		}
 		
 //		for(List<int[]> l : nextState(cur)) {
 //			System.out.println(Arrays.toString(l.get(0)) + " " + Arrays.toString(l.get(1)));
